@@ -30,8 +30,7 @@ Any other mechanism should work as well
 
 3. editably install the project
     
-    ```pip install -e .[dev,api,worker]
-    ```
+    ```pip install -e .[dev,api,worker]```
 
 # Services run via docker
 
