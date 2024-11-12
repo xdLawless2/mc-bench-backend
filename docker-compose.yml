@@ -1,0 +1,87 @@
+services:
+
+  api:
+    build:
+      dockerfile: "images/api.Dockerfile"
+      context: "."
+    image: "mcbench/api"
+    ports:
+      - "8000:8000"
+    environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "mc-bench"
+      POSTGRES_USER: "mc-bench-admin"
+      POSTGRES_PASSWORD: "mc-bench"
+      POSTGRES_SSLMODE: "disable"
+      REDIS_USE_AUTH: "false"
+      REDIS_HOST: "redis"
+
+  admin-api:
+    build:
+      dockerfile: "images/admin-api.Dockerfile"
+      context: "."
+    image: "mcbench/admin-api"
+    ports:
+      - "8001:8000"
+    environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "mc-bench"
+      POSTGRES_USER: "mc-bench-admin"
+      POSTGRES_PASSWORD: "mc-bench"
+      POSTGRES_SSLMODE: "disable"
+      REDIS_USE_AUTH: "false"
+      REDIS_HOST: "redis"
+
+  worker:
+    build:
+      dockerfile: "images/worker.Dockerfile"
+      context: "."
+    image: "mcbench/worker"
+    environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+
+  admin-worker:
+    build:
+      dockerfile: "images/admin-worker.Dockerfile"
+      context: "."
+    image: "mcbench/admin-worker"
+    environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "mc-bench"
+      POSTGRES_USER: "mc-bench-admin"
+      POSTGRES_PASSWORD: "mc-bench"
+      POSTGRES_SSLMODE: "disable"
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "mc-bench"
+      POSTGRES_USER: "mc-bench-admin"
+      POSTGRES_PASSWORD: "mc-bench"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  object:
+    image: minio/minio:latest
+    ports:
+      - "29000:9000"
+    volumes:
+      - minio-data:/data
+    environment:
+      MINIO_ACCESS_KEY: fake_key
+      MINIO_SECRET_KEY: fake_secret
+    command: ["server", "/data"]
+
+volumes:
+  minio-data:
