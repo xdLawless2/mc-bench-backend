@@ -17,6 +17,7 @@ services:
       POSTGRES_SSLMODE: "disable"
       REDIS_USE_AUTH: "false"
       REDIS_HOST: "redis"
+      REDIS_USE_SSL: "false"
 
   admin-api:
     build:
@@ -35,6 +36,7 @@ services:
       POSTGRES_SSLMODE: "disable"
       REDIS_USE_AUTH: "false"
       REDIS_HOST: "redis"
+      REDIS_USE_SSL: "false"
 
   worker:
     build:
@@ -43,6 +45,7 @@ services:
     image: "mcbench/worker"
     environment:
       CELERY_BROKER_URL: "redis://redis:6379/0"
+      REDIS_USE_SSL: "false"
 
   admin-worker:
     build:
@@ -57,6 +60,7 @@ services:
       POSTGRES_USER: "mc-bench-admin"
       POSTGRES_PASSWORD: "mc-bench"
       POSTGRES_SSLMODE: "disable"
+      REDIS_USE_SSL: "false"
 
   postgres:
     image: postgres:16
