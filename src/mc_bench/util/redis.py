@@ -18,6 +18,6 @@ def get_redis_client(database, **kwargs) -> StrictRedis:
         kwargs["username"] = os.environ["REDIS_USERNAME"]
 
     if os.environ.get("REDIS_USE_SSL", "true") == "true":
-        kwargs["connection_class"] = kwargs.pop("connection_class", redis.SSLConnection)
+        kwargs["ssl"] = kwargs.pop("ssl", True)
 
     return StrictRedis(**kwargs)
