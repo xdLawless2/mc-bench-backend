@@ -1,7 +1,9 @@
 import logging.config
 import sys
-from sqlalchemy import pool
+
 from alembic import context
+from sqlalchemy import pool
+
 from mc_bench.schema.postgres import metadata
 from mc_bench.util.postgres import get_engine
 
@@ -57,7 +59,13 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            dialect_opts={"paramstyle": "named"},
+            include_schemas=True,
+            compare_type=True,
+        )
 
         with context.begin_transaction():
             context.run_migrations()

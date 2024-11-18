@@ -1,13 +1,13 @@
 """ """
 
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, func, TIMESTAMP
-from .._metadata import metadata
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Table, func
 
+from .._metadata import metadata
 
 artifact = Table(
     "artifact",
     metadata,
-    Column("id", Integer, primary_key=True),
+    Column("id", Integer, primary_key=True, autoincrement=True),
     Column(
         "created", TIMESTAMP(timezone=False), server_default=func.now(), nullable=True
     ),
@@ -18,9 +18,9 @@ artifact = Table(
         nullable=False,
     ),
     Column(
-        "run_model_id",
+        "run_id",
         Integer,
-        ForeignKey("specification.run_model.id"),
+        ForeignKey("specification.run.id"),
         nullable=False,
     ),
     Column("bucket", String, unique=False, nullable=False),

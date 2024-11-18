@@ -1,25 +1,26 @@
 """ """
 
 from sqlalchemy import (
-    Table,
-    Column,
-    Integer,
-    ForeignKey,
-    UUID,
-    text,
-    func,
     TIMESTAMP,
+    UUID,
+    Column,
+    ForeignKey,
+    Integer,
+    Table,
+    func,
+    text,
 )
-from .._metadata import metadata
 
+from .._metadata import metadata
 
 comparison = Table(
     "comparison",
     metadata,
-    Column("id", Integer, primary_key=True),
+    Column("id", Integer, primary_key=True, autoincrement=True),
     Column(
         "created", TIMESTAMP(timezone=False), server_default=func.now(), nullable=True
     ),
+    Column("user_id", ForeignKey("auth.user.id"), nullable=False),
     Column(
         "comparison_id", UUID, nullable=False, server_default=text("uuid_generate_v4()")
     ),

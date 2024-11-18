@@ -1,10 +1,8 @@
+from . import auth, sample, scoring, specification
 from ._metadata import metadata
 
-from . import sample
-from . import specification
-from . import scoring
-
 __all__ = [
+    "auth",
     "metadata",
     "sample",
     "specification",
