@@ -1,18 +1,19 @@
-"""Add provider_class rows
+"""change OpenAI and Gemini provider class
 
-Revision ID: 4085c38e19e8
-Revises: b097774ba21f
-Create Date: 2024-11-19 22:46:00.704472
+Revision ID: 688482827ae4
+Revises: 9037d32770e9
+Create Date: 2024-12-13 18:11:51.318675
 
 """
-
 from typing import Sequence, Union
 
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision: str = "4085c38e19e8"
-down_revision: Union[str, None] = "b097774ba21f"
+revision: str = '688482827ae4'
+down_revision: Union[str, None] = '9037d32770e9'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -21,20 +22,21 @@ def upgrade() -> None:
     op.execute("""\
         INSERT INTO specification.provider_class (created_by, name) VALUES (
             (select id from auth.user where username = 'SYSTEM'),
-            'OPEN_AI_SDK'
+            'OPENAI_SDK'
         ) ON CONFLICT (name) DO NOTHING;
-
+               
         INSERT INTO specification.provider_class (created_by, name) VALUES (
             (select id from auth.user where username = 'SYSTEM'),
-            'ANTHROPIC_SDK'
+            'GEMINI_SDK'
         ) ON CONFLICT (name) DO NOTHING;
-
-        INSERT INTO specification.provider_class (created_by, name) VALUES (
-            (select id from auth.user where username = 'SYSTEM'),
-            'OPENROUTER_SDK'
-        ) ON CONFLICT (name) DO NOTHING;
+        
+        UPDATE specification.provider
+        SET provider_class = 'OPENAI_SDK'
+        WHERE provider_class = 'OPEN_AI_SDK';
+        
+        DELETE FROM specification.provider_class 
+        WHERE name = 'OPEN_AI_SDK';
     """)
-
 
 def downgrade() -> None:
     raise RuntimeError("Upgrades only")
