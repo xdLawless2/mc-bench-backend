@@ -7,3 +7,4 @@ pyhumps
 anthropic
 openai
 jinja2
+scalar-fastapi
