@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from scalar_fastapi import get_scalar_api_reference
 
 from mc_bench.apps.api.routers.comparison import comparison_router
 from mc_bench.apps.api.routers.user import user_router
@@ -23,3 +24,10 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(comparison_router)
+
+@app.get("/scalar", include_in_schema=False)
+async def scalar_docs():
+    return get_scalar_api_reference(
+        openapi_url="/openapi.json",
+        title="MC Bench API",
+    )
