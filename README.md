@@ -68,7 +68,7 @@ graph TD
     RenderWorker --> CeleryBroker
     ServerWorker --> CeleryBroker
     Scheduler --> CeleryBroker
-    
+
     AdminWorker --> DB
     RenderWorker --> DB
     ServerWorker --> DB
@@ -96,7 +96,7 @@ graph TD
     CeleryWorkers --> AdminWorker
     CeleryWorkers --> RenderWorker
     CeleryWorkers --> ServerWorker
-    
+
     %% Storage
     ObjStore -.-> DB
 ```
@@ -121,7 +121,7 @@ pyenv install 3.12.7
    pyenv virtualenv 3.12.7 mc-bench-backend
    pyenv activate mc-bench-backend
    ```
-   
+
     via vanilla venv
 
     ```shell
@@ -140,7 +140,7 @@ cp .env.template .env
 
 Populate the `.env` with your values.
 
-## 4. Setup login 
+## 4. Setup login
 See [frontend setup docs](https://github.com/mc-bench/mc-bench-frontend/blob/main/docs/setup_oauth_prereqs.md) for setting up a a Github Oauth 2.0 app.
 
 Update the values in your local env file as:
@@ -157,12 +157,12 @@ Install the project, as an editable package
 ```bash
 pip install -e .[dev]
 ```
- 
+
 
 ## 6. Database Setup
 Once you have completed setting up the python enviornment, it is time to setup the databases.
 
-This application requires 3 databases: postgres, redis, 
+This application requires 3 databases: postgres, redis,
 
 There are 2 approaches, running the database as a local service or from the docker-compose.
 
@@ -171,24 +171,24 @@ This will run the doc
 
 ```bash
 docker-compose run -d -p 5432:5432 postgres
-docker-compose run -d -p 6379:6379 redis 
+docker-compose run -d -p 6379:6379 redis
 ```
 
 ## Option 2: Install packages manually and run services
 
 MacOS [homebrew](https://brew.sh/) setup
- 
+
     brew install postgresql@16
     brew install redis
-   
+
     brew services start postgresql@16
     brew services start redis
- 
 
-You will need to create a database 
- 
+
+You will need to create a database
+
     ./bin/manual-postgres-setup
- 
+
 
 
 ## 7. Run migrations
@@ -203,7 +203,7 @@ With the python virtual environment activated, run the database migrations
 mc-bench-alembic upgrade head
 ```
 
-Or run 
+Or run
 ```shell
 docker-compose run --rm api mc-bench-alembic upgrade head
 ```
@@ -273,13 +273,13 @@ Additionally, several interval settings control how frequently certain operation
 
 ```shell
 # Log every N blocks placed during rendering
-export LOG_INTERVAL_BLOCKS="100"  
+export LOG_INTERVAL_BLOCKS="100"
 
 # Log every N materials baked during rendering
-export LOG_INTERVAL_MATERIALS="10"  
+export LOG_INTERVAL_MATERIALS="10"
 
 # Log every N build commands during server operations
-export LOG_INTERVAL_COMMANDS="50"  
+export LOG_INTERVAL_COMMANDS="50"
 
 # Log export progress at every N percent complete
 export LOG_INTERVAL_EXPORT_PERCENT="10"

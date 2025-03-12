@@ -53,7 +53,7 @@ if __name__ == "__main__":
     host = os.environ.get("POSTGRES_HOST", "localhost")
     port = os.environ.get("POSTGRES_PORT", "5432")
 
-    login_user = os.environ.get("POSTGRES_ADMIN_USER") 
+    login_user = os.environ.get("POSTGRES_ADMIN_USER")
     if not login_user:
         print("Please set the POSTGRES_ADMIN_USER environment variable, not set. Using default 'postgres',this may not be correct, please update.")
         login_user = "postgres"
