@@ -1,18 +1,122 @@
-# Development
+# MC Bench Backend
 
-This is known to work with python 3.12.7
+Backend archictecture
 
-# Pre-Requisites
+```mermaid
+graph TD
+    subgraph "Client Applications"
+        FE[Frontend]
+        External[External Clients]
+    end
 
-1. python installed. We recommend [pyenv]("https://github.com/pyenv/pyenv").
+    subgraph "API Layer"
+        API[Public API]
+        AdminAPI[Admin API]
+    end
+
+    subgraph "Worker Layer"
+        AdminWorker[Admin Worker]
+        RenderWorker[Render Worker]
+        ServerWorker[Server Worker]
+        Scheduler[Scheduler]
+    end
+
+    subgraph "Storage Layer"
+        DB[(PostgreSQL)]
+        ObjStore[(Object Storage)]
+    end
+
+    subgraph "Minecraft Integration"
+        MC[Minecraft Servers]
+        Builder[Builder Runner]
+    end
+
+    subgraph "AI Clients"
+        OpenAI[OpenAI]
+        Anthropic[Anthropic]
+        Gemini[Gemini]
+        Mistral[Mistral]
+        Grok[Grok]
+        Other[Other Models...]
+    end
+
+    subgraph "Task Queue"
+        CeleryBroker[Redis Broker]
+        CeleryWorkers[Celery Workers]
+    end
+
+    subgraph "Authentication"
+        Auth[Auth Manager]
+        Roles[Role-based Permissions]
+    end
+
+    %% Client connections
+    FE --> API
+    FE --> AdminAPI
+    External --> API
+
+    %% API connections
+    API --> Auth
+    AdminAPI --> Auth
+    API --> DB
+    AdminAPI --> DB
+    API --> CeleryBroker
+    AdminAPI --> CeleryBroker
+
+    %% Worker connections
+    AdminWorker --> CeleryBroker
+    RenderWorker --> CeleryBroker
+    ServerWorker --> CeleryBroker
+    Scheduler --> CeleryBroker
+    
+    AdminWorker --> DB
+    RenderWorker --> DB
+    ServerWorker --> DB
+    Scheduler --> DB
+
+    AdminWorker --> ObjStore
+    RenderWorker --> ObjStore
+    ServerWorker --> ObjStore
+
+    %% Minecraft integration
+    ServerWorker --> MC
+    ServerWorker --> Builder
+    Builder --> MC
+
+    %% AI model integrations
+    AdminWorker --> OpenAI
+    AdminWorker --> Anthropic
+    AdminWorker --> Gemini
+    AdminWorker --> Mistral
+    AdminWorker --> Grok
+    AdminWorker --> Other
+
+    %% Task queue
+    CeleryBroker --> CeleryWorkers
+    CeleryWorkers --> AdminWorker
+    CeleryWorkers --> RenderWorker
+    CeleryWorkers --> ServerWorker
+    
+    %% Storage
+    ObjStore -.-> DB
+```
+
+# Development Setup
+
+
+## 1. Setup python
+
+Python 3.12.7 installed. We recommend [pyenv]("https://github.com/pyenv/pyenv").
 
 ```shell
 pyenv install 3.12.7
 ```
 
+## 2. Setup python environment
+
 2. A virtual environment created and activated somewhere
 
-    via pyenv
+    via pyenv (recommended)
     ```shell
    pyenv virtualenv 3.12.7 mc-bench-backend
    pyenv activate mc-bench-backend
@@ -25,14 +129,69 @@ pyenv install 3.12.7
     python -m venv .venv
     source .venv/bin/activate
     ```
+    Any other mechanism should work as well
+
+## 3. Setup secrets
+Copy the .env file
+
+```bash
+cp .env.template .env
+```
+
+Populate the `.env` with your values.
+
+## 4. Setup login 
+See [frontend setup docs](https://github.com/mc-bench/mc-bench-frontend/blob/main/docs/setup_oauth_prereqs.md) for setting up a a Github Oauth 2.0 app.
+
+Update the values in your local env file as:
+```
+export GITHUB_CLIENT_ID="<your_client_id>"
+export GITHUB_CLIENT_SECRET="<your_client_secret>"
+```
+
+Auth call back URL should be on ```http://localhost:5173/login```
+
+
+## 5. Install `mc-bench` into local python
+Install the project, as an editable package
+```bash
+pip install -e .[dev]
+```
+ 
+
+## 6. Database Setup
+Once you have completed setting up the python enviornment, it is time to setup the databases.
+
+This application requires 3 databases: postgres, redis, 
+
+There are 2 approaches, running the database as a local service or from the docker-compose.
+
+## Option 1: Docker run as background services (recommended)
+This will run the doc
+
+```bash
+docker-compose run -d -p 5432:5432 postgres
+docker-compose run -d -p 6379:6379 redis 
+```
+
+## Option 2: Install packages manually and run services
+
+MacOS [homebrew](https://brew.sh/) setup
+ 
+    brew install postgresql@16
+    brew install redis
    
-Any other mechanism should work as well
+    brew services start postgresql@16
+    brew services start redis
+ 
 
-3. editably install the project
-    
-    ```pip install -e .[dev,api,worker,server-worker]```
+You will need to create a database 
+ 
+    ./bin/manual-postgres-setup
+ 
 
-# Run migrations
+
+## 7. Run migrations
 Load the environment variables with
 ```bash
 source .env
@@ -41,25 +200,17 @@ source .env
 With the python virtual environment activated, run the database migrations
 
 ```shell
-$ mc-bench-alembic upgrade head
+mc-bench-alembic upgrade head
 ```
 
 Or run 
 ```shell
-$ docker-compose run --rm api mc-bench-alembic upgrade head
+docker-compose run --rm api mc-bench-alembic upgrade head
 ```
 
-# Setup oauth2
 
-You need to create a Github oauth app and save the client and secret in your local env file as:
 
-GITHUB_CLIENT_ID
-GITHUB_CLIENT_SECRET
-
-See [frontend setup docs](https://github.com/mc-bench/mc-bench-frontend/blob/main/docs/setup_oauth_prereqs.md) 
-Auth call back URL should be on ```http://localhost:5173/login```
-
-# Login and give yourself a role
+## 8. Login and give yourself a role
 
 Running the frontend and the backend, signup and create a username.
 
