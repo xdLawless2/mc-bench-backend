@@ -161,6 +161,10 @@ def run_stage_task(
                     logger.debug(f"Started heartbeat thread for task {task_id}")
 
                     result = func(stage_context)
+                    # Commit here to ensure any transactions started by the stage are committed
+                    # Otherwise we may run into DB locking issues
+                    db.commit()
+
                     logger.info("Task completed successfully", result=result)
                     emit_event(
                         RunStageStateChanged(
