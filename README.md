@@ -18,7 +18,7 @@ MC-Bench changes how we evaluate AI models by challenging them to create Minecra
 Run the ruff formatter
 ```shell
 make fmt
-````
+```
 
 Run the ruff checker
 ```shell

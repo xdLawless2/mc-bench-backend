@@ -13,7 +13,7 @@ make reset
 
 # Quick Start
 
-### Prerequistes
+### Prerequisites
 - docker
 - git
 
@@ -79,7 +79,7 @@ See [mc-bench-frontend](https://github.com/mc-bench/mc-bench-frontend)
 
 
 ## 8. Login and give yourself a role
-You will want [Grant Roles Doc](docs/role-grant.md)
+See [Grant Roles Doc](role-grant.md)
 
 ## Logging Configuration
 

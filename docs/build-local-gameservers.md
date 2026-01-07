@@ -1,6 +1,6 @@
 # Build local gameservers
 
-The Minecraft benchmark runs ephemeral minecraft game servers. For licensing reasons we cannot ship or make these publicably available.
+The Minecraft benchmark runs ephemeral minecraft game servers. For licensing reasons we cannot ship or make these publicly available.
 
 You can however build your own locally.
 The easiest way to do this is to checkout [gameservers](https://github.com/mc-bench/gameservers).

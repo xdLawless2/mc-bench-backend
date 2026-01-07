@@ -1,10 +1,10 @@
-# Python Enviornment Quick Start
+# Python Environment Quick Start
 
 
-This approach will setup all of depenendices in your local python environment.
+This approach will setup all dependencies in your local python environment.
 
 
-## Prerequistes
+## Prerequisites
 - docker (optional)
 - git
 - python
@@ -83,7 +83,7 @@ pip install -e ".[dev]"
 
 
 ## 6. Database Setup
-Once you have completed setting up the python enviornment, it is time to setup the databases.
+Once you have completed setting up the python environment, it is time to setup the databases.
 
 This application requires 3 databases: postgres, redis,
 
@@ -140,9 +140,8 @@ python python  -m  mc_bench.apps.scheduler
 python server  /data  --console-address  0.0.0.0:9001
 uvicorn mc_bench.apps.admin_api.__main__:app --proxy-headers --port 8000 --host 0.0.0.0
 
-## 8. Login and give yourself a role
-You will want
-[Grant Roles Doc](docs/role_grant.md)
+## 10. Login and give yourself a role
+See [Grant Roles Doc](role-grant.md)
 
 
 
@@ -161,4 +160,4 @@ pip install -e .[render-worker]
 
 # Other Useful Guides
 
-- [Build local gameservers](docs/build_local_gameservers.md)
+- [Build local gameservers](../build-local-gameservers.md)

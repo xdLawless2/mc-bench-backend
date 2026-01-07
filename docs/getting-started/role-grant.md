@@ -4,7 +4,7 @@ Running the frontend and the backend, signup and create a username.
 
 Then use:
 
-```python
+```shell
 ./bin/grant-user-role grant --username {your username} --role admin
 ```
 To see the usernames use:
