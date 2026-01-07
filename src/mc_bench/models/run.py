@@ -440,7 +440,7 @@ class Sample(Base):
             },
             "schematic": {
                 "container_path": os.path.join(
-                    "/data/plugins/WorldEdit/schematics", f"{structure_name}.schem"
+                    "/data/plugins/FastAsyncWorldEdit/schematics", f"{structure_name}.schem"
                 ),
                 "host_file": f"{structure_name}.schem",
                 "host_path_directory": f"/data/schematics/{self.id}/",

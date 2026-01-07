@@ -244,10 +244,30 @@ def _make_predicate_sets_from_variant_keys(states: dict):
 
 
 class ResourceLoader:
+    # Map unsupported versions to the closest supported version for assets
+    VERSION_FALLBACK_MAP = {
+        "1.21.4": "1.21.1",
+        "1.21.3": "1.21.1",
+        "1.21.2": "1.21.1",
+    }
+
     def __init__(self, version):
-        self._asset_dir = minecraft_assets.get_asset_dir(version)
+        # Use fallback version for assets if the requested version isn't available
+        asset_version = self.VERSION_FALLBACK_MAP.get(version, version)
+        try:
+            self._asset_dir = minecraft_assets.get_asset_dir(asset_version)
+        except minecraft_assets.MinecraftVersionError:
+            # If even the fallback fails, try 1.21.1 as a last resort
+            logger.warning(
+                "Minecraft assets version not found, falling back to 1.21.1",
+                requested_version=version,
+                asset_version=asset_version,
+            )
+            self._asset_dir = minecraft_assets.get_asset_dir("1.21.1")
+            asset_version = "1.21.1"
+
         self._data_files = minecraft_data.MinecraftDataFiles(
-            minecraft_data.GameType.PC, version
+            minecraft_data.GameType.PC, asset_version
         )
 
         self._data_files_1_16_2 = minecraft_data.MinecraftDataFiles(
